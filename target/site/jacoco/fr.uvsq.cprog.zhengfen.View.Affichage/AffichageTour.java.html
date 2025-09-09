@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AffichageTour.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">zhengfen</a> &gt; <a href="index.source.html" class="el_package">fr.uvsq.cprog.zhengfen.View.Affichage</a> &gt; <span class="el_source">AffichageTour.java</span></div><h1>AffichageTour.java</h1><pre class="source lang-java linenums">package fr.uvsq.cprog.zhengfen.View.Affichage;
+
+import fr.uvsq.cprog.zhengfen.Model.ActionHistorique;
+import fr.uvsq.cprog.zhengfen.Model.CombinaisonInterface;
+import fr.uvsq.cprog.zhengfen.Model.Historique;
+import fr.uvsq.cprog.zhengfen.Model.Joueur.Joueur;
+import fr.uvsq.cprog.zhengfen.Model.OptionManager;
+import fr.uvsq.cprog.zhengfen.View.ModeAffichage;
+import java.util.HashMap;
+import java.util.List;
+
+public class AffichageTour {
+    private final List&lt;Joueur&gt; joueurs;
+    private final OptionManager optionManager;
+    private final HashMap&lt;Joueur, String&gt; couleursJoueurs;
+    private final String RESET;
+    public final String GRAS;
+    private Historique historique;;
+
+<span class="nc" id="L20">    public AffichageTour(List&lt;Joueur&gt; joueurs) {</span>
+<span class="nc" id="L21">        this.joueurs = joueurs;</span>
+<span class="nc" id="L22">        this.optionManager = OptionManager.getInstance();</span>
+<span class="nc" id="L23">        this.historique = Historique.getInstance();</span>
+
+<span class="nc" id="L25">        this.RESET = &quot;\u001B[0m&quot;; // Reset ANSI color</span>
+<span class="nc" id="L26">        this.GRAS= &quot;\u001B[1m&quot;; // Bold ANSI color</span>
+<span class="nc" id="L27">        List&lt;String&gt; couleurs = List.of(&quot;\u001B[31m&quot;, &quot;\u001B[32m&quot;,</span>
+            &quot;\u001B[33m&quot;, &quot;\u001B[34m&quot;); // rouge, vert, jaune, bleu
+
+<span class="nc" id="L30">        this.couleursJoueurs = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">        for (int i = 0; i &lt; joueurs.size(); i++) {</span>
+<span class="nc" id="L32">            couleursJoueurs.put(joueurs.get(i), couleurs.get(i));</span>
+        }
+<span class="nc" id="L34">    }</span>
+
+    public void afficher(Joueur joueurActuel, CombinaisonInterface pli, ModeAffichage mode) {
+<span class="nc" id="L37">        ClearTerminal.initialiserAffichage();</span>
+<span class="nc" id="L38">        System.out.println(String.format(&quot;=== ACTIONS PASSÉES ===&quot;));</span>
+<span class="nc" id="L39">        List&lt;ActionHistorique&gt; lastActions = historique.getLastAction(6);</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">        for (ActionHistorique action : lastActions) {</span>
+<span class="nc bnc" id="L41" title="All 12 branches missed.">            switch (action.getAction()) {</span>
+              case JOUE:
+<span class="nc" id="L43">                  System.out.print(String.format(&quot;- %s%s%s a joué &quot;, couleursJoueurs.get(action.getJoueur()), </span>
+<span class="nc" id="L44">                      action.getJoueur().getNom(), RESET));</span>
+<span class="nc" id="L45">                  new AffichageCombinaison(action.getCombinaison()).afficher();</span>
+<span class="nc" id="L46">                  break;</span>
+              case COMMENCEPARTIE:
+<span class="nc" id="L48">                  System.out.println(String.format(&quot;- La partie a commencé&quot;));</span>
+<span class="nc" id="L49">                  break;</span>
+              case FINPARTIE:
+<span class="nc" id="L51">                    System.out.println(String.format(&quot;- La partie est terminée&quot;));</span>
+<span class="nc" id="L52">                    break;</span>
+              case PASSE:
+<span class="nc" id="L54">                  System.out.println(String.format(&quot;- %s%s%s a passé son tour&quot;, couleursJoueurs.get(action.getJoueur()), </span>
+<span class="nc" id="L55">                      action.getJoueur().getNom(), RESET));</span>
+<span class="nc" id="L56">                  break;</span>
+              case ABANDON:
+<span class="nc" id="L58">                  System.out.println(String.format(&quot;- %s%s%s a abandonné&quot;, couleursJoueurs.get(action.getJoueur()), </span>
+<span class="nc" id="L59">                      action.getJoueur().getNom(), RESET));</span>
+<span class="nc" id="L60">                  break;</span>
+              case COMMENCEMANCHE:
+<span class="nc" id="L62">                  System.out.println(String.format(&quot;- Une nouvelle manche a commencé&quot;));</span>
+<span class="nc" id="L63">                  break;</span>
+              case FINMANCHE:
+<span class="nc" id="L65">                  System.out.println(String.format(&quot;- La manche est terminée&quot;));</span>
+<span class="nc" id="L66">                  break;</span>
+              case REMPORTEPLI:
+<span class="nc" id="L68">                  System.out.println(String.format(&quot;- %s%s%s a remporté le pli&quot;, couleursJoueurs.get(action.getJoueur()), </span>
+<span class="nc" id="L69">                      action.getJoueur().getNom(), RESET));</span>
+<span class="nc" id="L70">                  break;</span>
+              case COMMENCEPLI:
+<span class="nc" id="L72">                  System.out.println(String.format(&quot;- %s%s%s a commencé le pli&quot;, couleursJoueurs.get(action.getJoueur()), </span>
+<span class="nc" id="L73">                      action.getJoueur().getNom(), RESET));</span>
+<span class="nc" id="L74">                  break;</span>
+              case REMPORTEMANCHE:
+<span class="nc" id="L76">                  System.out.println(String.format(&quot;- %s%s%s a récupéré les plis du dernier joueur à avoir terminé la manche&quot;, couleursJoueurs.get(action.getJoueur()), </span>
+<span class="nc" id="L77">                      action.getJoueur().getNom(), RESET));</span>
+<span class="nc" id="L78">                  break;</span>
+              case GAGNE:
+<span class="nc" id="L80">                  System.out.println(String.format(&quot;- %s%s%s%s %sa gagné la partie%s&quot;, GRAS, couleursJoueurs.get(action.getJoueur()), </span>
+<span class="nc" id="L81">                      action.getJoueur().getNom(), RESET, GRAS, RESET));</span>
+<span class="nc" id="L82">                  break;</span>
+              default:
+<span class="nc" id="L84">                  System.out.println(String.format(&quot;- %s%s%s a effectué une action inconnue&quot;, couleursJoueurs.get(action.getJoueur()),</span>
+<span class="nc" id="L85">                      action.getJoueur().getNom(), RESET));</span>
+                  break;
+            }
+<span class="nc" id="L88">        }</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">        for (int i = 0; i &lt; 6 - lastActions.size(); i++) {</span>
+<span class="nc" id="L90">            System.out.println(&quot;&quot;);</span>
+        }
+<span class="nc" id="L92">        System.out.println(&quot;&quot;);</span>
+<span class="nc" id="L93">        System.out.println(String.format(&quot;=== ÉTAT DES JOUEURS ===&quot;));</span>
+<span class="nc" id="L94">        int max = 0;</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">        for (Joueur j : joueurs) {</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">            if (j.getNom().length() &gt; max) {</span>
+<span class="nc" id="L97">                max = j.getNom().length();</span>
+            }
+<span class="nc" id="L99">        }</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        for (Joueur joueur : joueurs) {</span>
+<span class="nc" id="L101">            String couleur = couleursJoueurs.get(joueur);</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">            if (joueur.getAbandon()) {</span>
+<span class="nc" id="L103">                System.out.println(String.format(&quot;%s%-&quot; + max + &quot;s%s : %4d pts   | Abandon&quot;, couleur, </span>
+<span class="nc" id="L104">                    joueur.getNom(), RESET, joueur.getPoints()));</span>
+            } else {
+<span class="nc" id="L106">                System.out.print(String.format(&quot;%s%-&quot; + max + &quot;s%s : %4d pts   | Main : &quot;, </span>
+<span class="nc" id="L107">                    couleur, joueur.getNom(), RESET, joueur.getPoints()));</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">                (optionManager.isDebogage() ? new AffichageMainVisible(joueur)</span>
+<span class="nc" id="L109">                : new AffichageMainCache(joueur)).afficher();</span>
+            }
+<span class="nc" id="L111">        }</span>
+<span class="nc" id="L112">        System.out.println(&quot;&quot;);</span>
+<span class="nc" id="L113">        System.out.println(String.format(&quot;%s=== PLIS EN COURS ===%s&quot;, GRAS, RESET));</span>
+<span class="nc" id="L114">        new AffichageCombinaison(pli).afficher();</span>
+<span class="nc" id="L115">        System.out.println();</span>
+
+<span class="nc" id="L117">        System.out.println(String.format(&quot;%s=== À %s%s%s %sDE JOUER ===%s&quot;, GRAS,</span>
+<span class="nc" id="L118">                couleursJoueurs.get(joueurActuel), joueurActuel.getNom(), RESET, GRAS, RESET));</span>
+<span class="nc" id="L119">        System.out.print(String.format(&quot;%sMain : %s&quot;, GRAS, RESET));</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">        switch (mode) {</span>
+          case CACHE:
+<span class="nc" id="L122">              new AffichageMainCache(joueurActuel).afficher();</span>
+<span class="nc" id="L123">              break;</span>
+          default:
+<span class="nc" id="L125">              new AffichageMainVisible(joueurActuel).afficher();</span>
+              break;
+        }
+<span class="nc" id="L128">        System.out.println();</span>
+<span class="nc" id="L129">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

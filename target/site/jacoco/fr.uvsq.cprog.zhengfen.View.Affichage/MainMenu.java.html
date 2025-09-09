@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MainMenu.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">zhengfen</a> &gt; <a href="index.source.html" class="el_package">fr.uvsq.cprog.zhengfen.View.Affichage</a> &gt; <span class="el_source">MainMenu.java</span></div><h1>MainMenu.java</h1><pre class="source lang-java linenums">package fr.uvsq.cprog.zhengfen.View.Affichage;
+
+import fr.uvsq.cprog.zhengfen.Model.OptionManager;
+import fr.uvsq.cprog.zhengfen.View.InputManager;
+
+public class MainMenu implements Menu {
+    private final OptionManager optionManager;
+    private final InputManager inputManager;
+
+<span class="nc" id="L10">    private final String GRAS = &quot;\u001B[1m&quot;;</span>
+<span class="nc" id="L11">    private final String RESET = &quot;\u001B[0m&quot;;</span>
+
+    /**
+     * Constructeur de la classe AffichageMenuPrincipal.
+     * Initialise l'optionManager.
+     */
+<span class="nc" id="L17">    public MainMenu(OptionManager optionManager) {</span>
+<span class="nc" id="L18">        this.inputManager = InputManager.getInstance();</span>
+<span class="nc" id="L19">        this.optionManager = optionManager;     </span>
+<span class="nc" id="L20">    }</span>
+
+    /**
+     * Méthode pour afficher le menu principal du jeu.
+     */
+    public MenuType display() {
+<span class="nc" id="L26">        System.out.println(String.format(&quot;%s=== BIENVENUE DANS LE JEU DE CARTES ZHENGFEN ===%s\n&quot;, GRAS, RESET));</span>
+<span class="nc" id="L27">        OptionsActives.afficherOptionsActives(optionManager);</span>
+<span class="nc" id="L28">        System.out.println(String.format(&quot;\n%s=== MENU PRINCIPAL ===%s&quot;, GRAS, RESET));</span>
+<span class="nc" id="L29">        System.out.println(String.format(&quot;  %s1. Jouer%s&quot;, GRAS, RESET));</span>
+<span class="nc" id="L30">        System.out.println(String.format(&quot;  %s2. Options%s&quot;, GRAS, RESET));</span>
+<span class="nc" id="L31">        System.out.println(String.format(&quot;  %s3. Quitter%s&quot;, GRAS, RESET));</span>
+<span class="nc" id="L32">        System.out.print(String.format(&quot;\n%sChoisissez une option :%s &quot;, GRAS, RESET));</span>
+<span class="nc" id="L33">        int entree = inputManager.lireEntier();</span>
+<span class="nc bnc" id="L34" title="All 4 branches missed.">        while (entree &lt; 1 || entree &gt; 3) {</span>
+<span class="nc" id="L35">            System.out.print(&quot;Choix invalide. Veuillez réessayer : &quot;);</span>
+<span class="nc" id="L36">            entree = inputManager.lireEntier();</span>
+        }
+<span class="nc bnc" id="L38" title="All 4 branches missed.">        switch (entree) {</span>
+          case 1:
+<span class="nc" id="L40">              return MenuType.JOUE;</span>
+          case 2:
+<span class="nc" id="L42">              return MenuType.OPTIONS;</span>
+          case 3:
+<span class="nc" id="L44">              return MenuType.EXIT;</span>
+          default:
+<span class="nc" id="L46">              System.out.println(&quot;Choix invalide. Veuillez réessayer.&quot;);</span>
+<span class="nc" id="L47">              return MenuType.MAIN;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

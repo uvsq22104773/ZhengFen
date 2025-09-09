@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OptionsMenu.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">zhengfen</a> &gt; <a href="index.source.html" class="el_package">fr.uvsq.cprog.zhengfen.View.Affichage</a> &gt; <span class="el_source">OptionsMenu.java</span></div><h1>OptionsMenu.java</h1><pre class="source lang-java linenums">package fr.uvsq.cprog.zhengfen.View.Affichage;
+
+import fr.uvsq.cprog.zhengfen.Model.OptionManager;
+import fr.uvsq.cprog.zhengfen.View.InputManager;
+
+public class OptionsMenu implements Menu {
+    private final OptionManager optionManager;
+    private final InputManager inputManager;
+
+<span class="nc" id="L10">    private final String GRAS = &quot;\u001B[1m&quot;;</span>
+<span class="nc" id="L11">    private final String RESET = &quot;\u001B[0m&quot;;</span>
+<span class="nc" id="L12">    private final String GREY = &quot;\u001B[38;5;244m&quot;;</span>
+
+    /**
+     * Constructeur de la classe AffichageMenuOption.
+     * Initialise l'optionManager.
+     */
+<span class="nc" id="L18">    public OptionsMenu(OptionManager optionManager) {</span>
+<span class="nc" id="L19">        this.optionManager = optionManager;</span>
+<span class="nc" id="L20">        this.inputManager = InputManager.getInstance();</span>
+<span class="nc" id="L21">    }</span>
+
+    /**
+     * Méthode pour afficher les options du joueur.
+     */
+    @Override
+    public MenuType display() {
+<span class="nc" id="L28">        System.out.println(String.format(&quot;%s=== OPTIONS DU JEU ===%s\n&quot;, GRAS, RESET));</span>
+<span class="nc" id="L29">        OptionsActives.afficherOptionsActives(optionManager);</span>
+<span class="nc" id="L30">        System.out.println(String.format(&quot;\n%s=== MENU OPTIONS ===%s&quot;, GRAS, RESET));</span>
+<span class="nc" id="L31">        System.out.println(String.format(&quot;  %s1. Modifier le nombre de joueurs%s&quot;, GRAS, RESET));</span>
+<span class="nc" id="L32">        System.out.println(String.format(&quot;  %s2. Modifier le nombre d'IA%s&quot;, GRAS, RESET));</span>
+<span class="nc bnc" id="L33" title="All 2 branches missed.">        boolean iaSup0 = optionManager.getNombreIa() &gt; 0;</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">        System.out.println(String.format(&quot;  %s3. Modifier la difficulté des IAs%s&quot;, iaSup0 ? GRAS : GREY, RESET));</span>
+<span class="nc" id="L35">        System.out.println(String.format(&quot;  %s4. Modifier le nombre de points de victoire%s&quot;, GRAS, RESET));</span>
+<span class="nc" id="L36">        System.out.println(String.format(&quot;  %s5. Activer/Désactiver le Joker%s&quot;, GRAS, RESET));</span>
+<span class="nc" id="L37">        System.out.println(String.format(&quot;  %s6. Modifier les combinaisons activées%s&quot;, GRAS, RESET));</span>
+<span class="nc" id="L38">        System.out.println(String.format(&quot;  %s7. Activer/Désactiver le mode débogage%s&quot;, GRAS, RESET));</span>
+<span class="nc" id="L39">        System.out.println(String.format(&quot;  %s8. Retour au menu principal%s&quot;, GRAS, RESET));</span>
+<span class="nc" id="L40">        System.out.print(String.format(&quot;\n%sChoisissez une option :%s &quot;, GRAS, RESET));</span>
+<span class="nc" id="L41">        int entree = inputManager.lireEntier();</span>
+<span class="nc bnc" id="L42" title="All 8 branches missed.">        while ((entree == 3 &amp;&amp; !iaSup0) || entree &lt; 1 || entree &gt; 8) {</span>
+<span class="nc bnc" id="L43" title="All 4 branches missed.">            if (entree == 3 &amp;&amp; !iaSup0) {</span>
+<span class="nc" id="L44">                System.out.print(&quot;Choix invalide (aucune IA). Veuillez réessayer : &quot;);</span>
+            } else {
+<span class="nc" id="L46">                System.out.print(&quot;Choix invalide. Veuillez réessayer : &quot;);</span>
+            }
+<span class="nc" id="L48">            entree = inputManager.lireEntier();</span>
+        }
+<span class="nc bnc" id="L50" title="All 9 branches missed.">        switch (entree) {</span>
+          case 1:
+<span class="nc" id="L52">              System.out.print(&quot;Entrez le nombre de joueurs (2-4) : &quot;);</span>
+<span class="nc" id="L53">              int nombreDeJoueurs = inputManager.lireEntier();</span>
+              while (true) {
+                  try {
+<span class="nc" id="L56">                      optionManager.setNombreDeJoueurs(nombreDeJoueurs);</span>
+<span class="nc" id="L57">                      break; // Sortir de la boucle si la valeur est valide</span>
+<span class="nc" id="L58">                  } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L59">                      System.out.print(e.getMessage() + &quot; Veuillez réessayer : &quot;);</span>
+<span class="nc" id="L60">                      nombreDeJoueurs = inputManager.lireEntier();</span>
+<span class="nc" id="L61">                  }</span>
+              }
+<span class="nc" id="L63">              return MenuType.OPTIONS;</span>
+          case 2:
+<span class="nc" id="L65">              System.out.print(String.format(&quot;Entrez le nombre d'IA (0-%s) : &quot;, optionManager.getNombreDeJoueurs()));</span>
+<span class="nc" id="L66">              int nombreIa = inputManager.lireEntier();</span>
+              while (true) {
+                  try {
+<span class="nc" id="L69">                      optionManager.setNombreIa(nombreIa);</span>
+<span class="nc" id="L70">                      break; // Sortir de la boucle si la valeur est valide</span>
+<span class="nc" id="L71">                  } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L72">                      System.out.print(e.getMessage() + &quot; Veuillez réessayer : &quot;);</span>
+<span class="nc" id="L73">                      nombreIa = inputManager.lireEntier();</span>
+<span class="nc" id="L74">                  }</span>
+              }
+<span class="nc" id="L76">              return MenuType.OPTIONS;</span>
+          case 3:
+<span class="nc" id="L78">              return MenuType.DIFFICULTE;</span>
+          case 4:
+<span class="nc" id="L80">              System.out.print(&quot;Entrez le nombre de points de victoire : &quot;);</span>
+<span class="nc" id="L81">              int pointsVictoire = inputManager.lireEntier();</span>
+              while (true) {
+                  try {
+<span class="nc" id="L84">                      optionManager.setNombreDePointsVictoire(pointsVictoire);</span>
+<span class="nc" id="L85">                      break; // Sortir de la boucle si la valeur est valide</span>
+<span class="nc" id="L86">                  } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L87">                      System.out.print(e.getMessage() + &quot; Veuillez réessayer : &quot;);</span>
+<span class="nc" id="L88">                      pointsVictoire = inputManager.lireEntier();</span>
+<span class="nc" id="L89">                  }</span>
+              }
+<span class="nc" id="L91">              return MenuType.OPTIONS;</span>
+          case 5:
+<span class="nc bnc" id="L93" title="All 2 branches missed.">              optionManager.setJoker(!optionManager.isJoker());</span>
+<span class="nc" id="L94">              return MenuType.OPTIONS;</span>
+          case 6:
+<span class="nc" id="L96">              return MenuType.COMBINAISONS;</span>
+          case 7:
+<span class="nc bnc" id="L98" title="All 2 branches missed.">              optionManager.setDebogage(!optionManager.isDebogage());</span>
+<span class="nc" id="L99">              return MenuType.OPTIONS;</span>
+          case 8:
+<span class="nc" id="L101">              return MenuType.MAIN;</span>
+          default:
+<span class="nc" id="L103">              System.out.println(&quot;Choix invalide. Veuillez réessayer.&quot;);</span>
+<span class="nc" id="L104">              return MenuType.OPTIONS; // Afficher à nouveau le menu principal</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CombinaisonsMenu.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">zhengfen</a> &gt; <a href="index.source.html" class="el_package">fr.uvsq.cprog.zhengfen.View.Affichage</a> &gt; <span class="el_source">CombinaisonsMenu.java</span></div><h1>CombinaisonsMenu.java</h1><pre class="source lang-java linenums">package fr.uvsq.cprog.zhengfen.View.Affichage;
+
+import fr.uvsq.cprog.zhengfen.Model.OptionManager;
+import fr.uvsq.cprog.zhengfen.Model.TypeCombinaison;
+import fr.uvsq.cprog.zhengfen.View.InputManager;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class CombinaisonsMenu implements Menu {
+    private final OptionManager optionManager;
+    private final InputManager inputManager;
+<span class="nc" id="L14">    private List&lt;TypeCombinaison&gt; combinaisons = new ArrayList&lt;&gt;();</span>
+
+<span class="nc" id="L16">    private final String GRAS = &quot;\u001B[1m&quot;;</span>
+<span class="nc" id="L17">    private final String RESET = &quot;\u001B[0m&quot;;</span>
+
+    /**
+     * Constructeur de la classe CombinaisonsOptionMenu.
+     * Initialise l'optionManager.
+     */
+<span class="nc" id="L23">    public CombinaisonsMenu(OptionManager optionManager) {</span>
+<span class="nc" id="L24">        this.inputManager = InputManager.getInstance();</span>
+<span class="nc" id="L25">        this.optionManager = optionManager;</span>
+<span class="nc" id="L26">        this.combinaisons = optionManager.getCombinaisonsPossibles().keySet().stream()</span>
+<span class="nc" id="L27">            .sorted(Comparator.comparingInt(TypeCombinaison::getForce))</span>
+<span class="nc" id="L28">            .collect(Collectors.toList());</span>
+<span class="nc" id="L29">    }</span>
+
+    /**
+     * Méthode pour afficher les combinaisons activées.
+     */
+    @Override
+    public MenuType display() {
+<span class="nc" id="L36">        System.out.println(String.format(&quot;%s=== COMBINAISONS ===%s\n&quot;, GRAS, RESET));</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">        for (int i = 0; i &lt; combinaisons.size(); i++) {</span>
+<span class="nc" id="L38">            TypeCombinaison combinaison = combinaisons.get(i);</span>
+<span class="nc" id="L39">            System.out.println(String.format(&quot;  %s%2d. %-25s%s : %s&quot;, GRAS, i + 1, combinaison, RESET,</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">                    optionManager.getCombinaisonsPossibles().get(combinaison) ? &quot; Activée&quot; : &quot; Désactivée&quot;));</span>
+        }
+<span class="nc" id="L42">        System.out.println(String.format(&quot;\n  %s%d. Retour au menu des options%s&quot;, GRAS, combinaisons.size() + 1, RESET));</span>
+<span class="nc" id="L43">        System.out.print(String.format(&quot;\n%sChoisissez une combinaison à activer/désactiver :%s &quot;, GRAS, RESET));</span>
+<span class="nc" id="L44">        int entree = inputManager.lireEntier();</span>
+<span class="nc bnc" id="L45" title="All 4 branches missed.">        while (entree &lt; 1 || entree &gt; combinaisons.size() + 1) {</span>
+<span class="nc" id="L46">            System.out.print(String.format(&quot;Choix invalide (nombre entre 1 et %s). Veuillez réessayer : &quot;, combinaisons.size() + 1));</span>
+<span class="nc" id="L47">            entree = inputManager.lireEntier();</span>
+        }
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        if (entree == combinaisons.size() + 1) {</span>
+<span class="nc" id="L50">            return MenuType.OPTIONS;</span>
+        }
+<span class="nc" id="L52">        TypeCombinaison combinaison = combinaisons.get(entree - 1);</span>
+<span class="nc" id="L53">        boolean etatActuel = optionManager.getCombinaisonsPossibles().get(combinaison);</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        optionManager.getCombinaisonsPossibles().put(combinaison, !etatActuel);</span>
+
+<span class="nc" id="L56">        return MenuType.COMBINAISONS;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

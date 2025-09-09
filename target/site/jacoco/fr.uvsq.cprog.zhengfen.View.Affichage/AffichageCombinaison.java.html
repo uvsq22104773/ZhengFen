@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AffichageCombinaison.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">zhengfen</a> &gt; <a href="index.source.html" class="el_package">fr.uvsq.cprog.zhengfen.View.Affichage</a> &gt; <span class="el_source">AffichageCombinaison.java</span></div><h1>AffichageCombinaison.java</h1><pre class="source lang-java linenums">package fr.uvsq.cprog.zhengfen.View.Affichage;
+
+import fr.uvsq.cprog.zhengfen.Model.Carte;
+import fr.uvsq.cprog.zhengfen.Model.Carte.Couleur;
+import fr.uvsq.cprog.zhengfen.Model.CombinaisonInterface;
+import fr.uvsq.cprog.zhengfen.View.AffichageCarte;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Classe pour afficher un pli.
+ * Elle utilise des codes ANSI pour colorer les cartes en fonction de leur couleur.
+ */
+public class AffichageCombinaison implements ComposantAffichage {
+    private CombinaisonInterface combinaison;
+    private static final String RESET = &quot;\u001B[0m&quot;;
+    private static final String VERT = &quot;\u001B[42m&quot;;
+    private static final String BLEU = &quot;\u001B[48;5;26m&quot;;
+    private static final String ROUGE = &quot;\u001B[41m&quot;;
+    private static final String VIOLET = &quot;\u001B[45m&quot;;
+    private static final String JAUNE = &quot;\u001B[48;5;214m&quot;;
+    private static final String FOND_GRIS = &quot;\u001B[48;5;250m&quot;;
+    private static final String TEXTE_GRIS = &quot;\u001B[38;5;255m&quot;;
+
+    /**
+     * Constructeur de la classe AffichagePli.
+     *
+     * @param pli Le pli à afficher.
+     */
+<span class="fc" id="L31">    public AffichageCombinaison(CombinaisonInterface combinaison) {</span>
+<span class="fc" id="L32">        this.combinaison = combinaison;</span>
+<span class="fc" id="L33">    }</span>
+
+    /**
+     * Méthode pour afficher le pli.
+     * Elle utilise des codes ANSI pour colorer les cartes en fonction de leur couleur.
+     */
+    @Override
+    public void afficher() {
+<span class="fc" id="L41">        Map&lt;Carte.Couleur, String&gt; couleurCartes = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L42">        couleurCartes.put(Couleur.TREFLE, VERT);</span>
+<span class="fc" id="L43">        couleurCartes.put(Couleur.PIQUE, BLEU);</span>
+<span class="fc" id="L44">        couleurCartes.put(Couleur.CARREAU, ROUGE);</span>
+<span class="fc" id="L45">        couleurCartes.put(Couleur.COEUR, VIOLET);</span>
+<span class="fc" id="L46">        couleurCartes.put(Couleur.SMALL, JAUNE);</span>
+<span class="fc" id="L47">        couleurCartes.put(Couleur.BIG, JAUNE);</span>
+
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">        if (this.combinaison == null) {</span>
+<span class="nc" id="L50">            System.out.println(String.format(&quot;%s%s -- %s %s%s -- %s %s%s -- %s %s%s -- %s&quot;,</span>
+                FOND_GRIS, TEXTE_GRIS, RESET, FOND_GRIS, TEXTE_GRIS, RESET, FOND_GRIS, TEXTE_GRIS,
+                RESET, FOND_GRIS, TEXTE_GRIS, RESET));
+<span class="nc" id="L53">            return;</span>
+        }
+<span class="fc" id="L55">        List&lt;Carte&gt; cartes = this.combinaison.getCartes();</span>
+
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        for (Carte carte : cartes) {</span>
+<span class="fc" id="L58">            String couleur = couleurCartes.get(carte.getCouleur());</span>
+<span class="fc" id="L59">            String carteAffichee = String.format(&quot;%s %s %s&quot;, couleur, AffichageCarte.afficherCarte(carte), RESET);</span>
+<span class="fc" id="L60">            System.out.print(carteAffichee + &quot; &quot;);</span>
+<span class="fc" id="L61">        }</span>
+<span class="fc" id="L62">        System.out.println();</span>
+<span class="fc" id="L63">    }</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

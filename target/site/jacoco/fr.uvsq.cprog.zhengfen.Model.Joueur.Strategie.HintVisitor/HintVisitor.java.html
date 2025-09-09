@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HintVisitor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">zhengfen</a> &gt; <a href="index.source.html" class="el_package">fr.uvsq.cprog.zhengfen.Model.Joueur.Strategie.HintVisitor</a> &gt; <span class="el_source">HintVisitor.java</span></div><h1>HintVisitor.java</h1><pre class="source lang-java linenums">package fr.uvsq.cprog.zhengfen.Model.Joueur.Strategie.HintVisitor;
+
+import fr.uvsq.cprog.zhengfen.Model.Carte;
+import fr.uvsq.cprog.zhengfen.Model.CombinaisonInterface;
+import fr.uvsq.cprog.zhengfen.Model.Joueur.Joueur;
+import fr.uvsq.cprog.zhengfen.Model.TypeCombinaisonZhengfenInterface;
+import java.util.List;
+
+/** Classe implémentant HintVisitorInterface pour le jeu zhengfen. */
+public class HintVisitor implements HintVisitorInterface {
+
+<span class="nc" id="L12">    private final int NB_TRIALS = 30;</span>
+    private final TypeCombinaisonZhengfenInterface combinationTypes;
+
+    /** Constructor. */
+<span class="nc" id="L16">    public HintVisitor() {</span>
+<span class="nc" id="L17">        this.combinationTypes = null;</span>
+<span class="nc" id="L18">    }</span>
+
+    /** Constructor linking combinationType interface. */
+<span class="nc" id="L21">    public HintVisitor(TypeCombinaisonZhengfenInterface combinationTypes) {</span>
+<span class="nc" id="L22">        this.combinationTypes = combinationTypes;</span>
+<span class="nc" id="L23">    }</span>
+
+    /** Conseille une combinaison pour un joueur humain pour le jeu zheng fen. */
+    public CombinaisonInterface conseillerJoueurHumain(Joueur joueur,
+            CombinaisonInterface derniereJouee) {
+<span class="nc" id="L28">        throw new UnsupportedOperationException(&quot;Not implemented&quot;);</span>
+    }
+
+    /** Conseille une combinaison pour un joueur IA classique. */
+    @Override
+    public CombinaisonInterface conseillerJoueurIA(Joueur joueur, CombinaisonInterface derniereJouee) {
+<span class="nc bnc" id="L34" title="All 2 branches missed.">        if (joueur.mainVide()) {</span>
+<span class="nc" id="L35">            return null;</span>
+        }
+
+<span class="nc" id="L38">        List&lt;Carte&gt; main = joueur.getMain();</span>
+<span class="nc" id="L39">        CombinaisonInterface meilleure = null;</span>
+
+<span class="nc bnc" id="L41" title="All 2 branches missed.">        for (Carte carte : main) {</span>
+<span class="nc" id="L42">            List&lt;Carte&gt; candidate = List.of(carte);</span>
+<span class="nc" id="L43">            CombinaisonInterface combinaison = combinationTypes.combinationFrom(candidate);</span>
+
+<span class="nc bnc" id="L45" title="All 4 branches missed.">            if (combinaison == null || combinaison.getRank() == null) {</span>
+<span class="nc" id="L46">                continue;</span>
+            }
+
+<span class="nc" id="L49">            Integer rankComb = combinaison.getRank();</span>
+
+<span class="nc bnc" id="L51" title="All 2 branches missed.">            if (derniereJouee == null) {</span>
+<span class="nc bnc" id="L52" title="All 6 branches missed.">                if (meilleure == null || meilleure.getRank() == null || rankComb &lt; meilleure.getRank()) {</span>
+<span class="nc" id="L53">                    meilleure = combinaison;</span>
+                }
+            } else {
+<span class="nc" id="L56">                Integer rankDerniere = derniereJouee.getRank();</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">                if (rankDerniere != null</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">                        &amp;&amp; combinationTypes.estDuMemeType(combinaison, derniereJouee)</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">                        &amp;&amp; rankComb &gt;= rankDerniere) { </span>
+<span class="nc bnc" id="L60" title="All 6 branches missed.">                    if (meilleure == null || meilleure.getRank() == null || rankComb &lt; meilleure.getRank()) {</span>
+<span class="nc" id="L61">                        meilleure = combinaison;</span>
+                    }
+                }
+            }
+<span class="nc" id="L65">        }</span>
+
+<span class="nc" id="L67">        return meilleure;</span>
+    }
+
+    /** Conseille une combinaison pour un joueur IA expert. */
+    public CombinaisonInterface conseillerJoueurIAExpert(Joueur joueur,
+            CombinaisonInterface derniereJouee) {
+<span class="nc" id="L73">        CombinaisonInterface comb = null;</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        if (derniereJouee == null) {</span>
+<span class="nc bnc" id="L75" title="All 4 branches missed.">            for (int trial = 0; trial &lt; NB_TRIALS &amp;&amp; comb == null; trial++) {</span>
+<span class="nc" id="L76">                comb = combinationTypes.generateRandomCombination(joueur.getMain());</span>
+            }
+<span class="nc" id="L78">            return comb;</span>
+        }
+        else {
+<span class="nc" id="L81">            int trial_no = 0;</span>
+<span class="nc bnc" id="L82" title="All 4 branches missed.">            while (comb == null &amp;&amp; trial_no &lt; this.NB_TRIALS) {</span>
+<span class="nc" id="L83">                comb = combinationTypes.combinationsOfType(derniereJouee, joueur.getMain());</span>
+<span class="nc" id="L84">                trial_no++;</span>
+            }
+<span class="nc" id="L86">            return comb;</span>
+        } 
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

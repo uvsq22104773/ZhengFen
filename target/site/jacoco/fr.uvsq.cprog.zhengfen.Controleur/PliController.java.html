@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PliController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">zhengfen</a> &gt; <a href="index.source.html" class="el_package">fr.uvsq.cprog.zhengfen.Controleur</a> &gt; <span class="el_source">PliController.java</span></div><h1>PliController.java</h1><pre class="source lang-java linenums">package fr.uvsq.cprog.zhengfen.Controleur;
+
+import fr.uvsq.cprog.zhengfen.Model.*;
+import fr.uvsq.cprog.zhengfen.Model.Joueur.Joueur;
+import fr.uvsq.cprog.zhengfen.Model.Joueur.JoueurHumain;
+import fr.uvsq.cprog.zhengfen.View.Affichage.AffichageTour;
+import fr.uvsq.cprog.zhengfen.View.InputManager;
+import fr.uvsq.cprog.zhengfen.View.ModeAffichage;
+import fr.uvsq.cprog.zhengfen.View.VuePli;
+import java.util.*;
+
+/**
+ * Gère un pli (séquence jusqu'à ce que tous sauf un aient passé).
+ * Implémente l'interface PliInterface utilisée par les stratégies.
+ */
+public class PliController implements PliInterface {
+    private final Pli pli;
+    private final Map&lt;Joueur, Boolean&gt; aPasse;
+    private Joueur dernierJoueurActif;
+<span class="nc" id="L20">    private final List&lt;Carte&gt; cartesDuPli = new ArrayList&lt;&gt;();</span>
+    private TypeCombinaisonZhengfenInterface typesCombinaison;
+    private final AffichageTour affichageTour;
+<span class="nc" id="L23">    private final Historique historique = Historique.getInstance();</span>
+<span class="nc" id="L24">    private final InputManager inputManager = InputManager.getInstance();</span>
+
+<span class="nc" id="L26">    public PliController(List&lt;Joueur&gt; joueurs) {</span>
+<span class="nc" id="L27">        this.pli = new Pli(joueurs);</span>
+<span class="nc" id="L28">        this.aPasse = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L29">        this.affichageTour = new AffichageTour(joueurs);</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">        for (Joueur j : joueurs) {</span>
+<span class="nc" id="L31">            aPasse.put(j, false);</span>
+<span class="nc" id="L32">        }</span>
+<span class="nc" id="L33">    }</span>
+
+    /**
+     * Lance un pli jusqu'à ce que tous les joueurs sauf un passent.
+     * 
+     * 
+     * @return (gagnant, points gagnés)
+     */
+    public Map.Entry&lt;Joueur, Integer&gt; jouer(Joueur joueurStarter) {
+<span class="nc" id="L42">        CombinaisonCourante.reset();</span>
+<span class="nc" id="L43">        int index = pli.getJoueurs().indexOf(joueurStarter);</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">        while (pli.getJoueurs().get(index).getMain().isEmpty()) {</span>
+<span class="nc" id="L45">            index = (index + 1) % pli.getJoueurs().size();</span>
+        }
+<span class="nc" id="L47">        boolean premierCoup = true;</span>
+
+        while (true) {
+<span class="nc" id="L50">            Joueur joueur = pli.getJoueurs().get(index);</span>
+
+<span class="nc bnc" id="L52" title="All 4 branches missed.">            if (!joueur.getAbandon() &amp;&amp; !joueur.mainVide()) {</span>
+<span class="nc" id="L53">                affichageTour.afficher(joueur, pli.getCombinaisonEnCours(), ModeAffichage.CACHE);</span>
+<span class="nc" id="L54">                VuePli.afficherAttente();</span>
+<span class="nc" id="L55">                inputManager.lireLigne();</span>
+
+<span class="nc bnc" id="L57" title="All 2 branches missed.">                if (joueur instanceof JoueurHumain) {</span>
+<span class="nc" id="L58">                    affichageTour.afficher(joueur, pli.getCombinaisonEnCours(), ModeAffichage.VISIBLE);</span>
+<span class="nc" id="L59">                    VuePli.afficherInstructions();</span>
+                }
+
+<span class="nc" id="L62">                joueur.jouerTour(this); // Appelle stratégie</span>
+
+<span class="nc" id="L64">                CombinaisonInterface tentative = CombinaisonCourante.get();</span>
+
+<span class="nc bnc" id="L66" title="All 2 branches missed.">                if (tentative != null) {</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">                    boolean estValide = premierCoup</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">                            || (typesCombinaison.estDuMemeType(tentative, pli.getCombinaisonEnCours())</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">                                    &amp;&amp; tentative.getRank() &gt; pli.getCombinaisonEnCours().getRank());</span>
+
+<span class="nc bnc" id="L71" title="All 2 branches missed.">                    if (estValide) {</span>
+<span class="nc" id="L72">                        pli.setCombinaisonEnCours(tentative);</span>
+<span class="nc" id="L73">                        historique.addAction(new ActionHistorique(joueur, Action.JOUE, tentative));</span>
+<span class="nc" id="L74">                        pli.setGagnant(joueur);</span>
+<span class="nc" id="L75">                        dernierJoueurActif = joueur;</span>
+<span class="nc" id="L76">                        aPasse.replaceAll((j, b) -&gt; false);</span>
+<span class="nc" id="L77">                        cartesDuPli.addAll(tentative.getCartes());</span>
+<span class="nc" id="L78">                        joueur.retirerCartes(tentative.getCartes());</span>
+<span class="nc" id="L79">                        premierCoup = false;</span>
+                    } else {
+<span class="nc" id="L81">                        aPasse.put(joueur, true);</span>
+<span class="nc" id="L82">                        System.out.println(&quot;Combinaison invalide. Vous passez.&quot;);</span>
+                    }
+                }
+
+<span class="nc bnc" id="L86" title="All 2 branches missed.">                if (seulJoueurActifAvecCartesRestantes()</span>
+<span class="nc bnc" id="L87" title="All 4 branches missed.">                    || joueur.equals(dernierJoueurActif) &amp;&amp; tousOntPasseSauf(dernierJoueurActif)) {</span>
+<span class="nc" id="L88">                    break;</span>
+                }
+<span class="nc" id="L90">            } else {</span>
+<span class="nc" id="L91">                aPasse.put(joueur, true);</span>
+            }
+
+<span class="nc" id="L94">            index = (index + 1) % pli.getJoueurs().size();</span>
+<span class="nc" id="L95">        }</span>
+
+<span class="nc" id="L97">        int points = calculerPointsDuPli();</span>
+<span class="nc" id="L98">        historique.addAction(new ActionHistorique(pli.getGagnant(), Action.REMPORTEPLI, null));</span>
+
+<span class="nc" id="L100">        pli.getGagnant().ajoutPoints(points);</span>
+
+<span class="nc" id="L102">        cartesDuPli.clear();</span>
+<span class="nc" id="L103">        CombinaisonCourante.reset();</span>
+        
+<span class="nc" id="L105">        return Map.entry(pli.getGagnant(), points);</span>
+    }
+
+    private int calculerPointsDuPli() {
+<span class="nc" id="L109">        int total = 0;</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        for (Carte c : cartesDuPli) {</span>
+<span class="nc bnc" id="L111" title="All 3 branches missed.">            switch (c.getValeur()) {</span>
+<span class="nc" id="L112">                case CINQ -&gt; total += 5;</span>
+<span class="nc" id="L113">                case DIX, ROI -&gt; total += 10;</span>
+                default -&gt; {
+                }
+            }
+<span class="nc" id="L117">        }</span>
+<span class="nc" id="L118">        return total;</span>
+    }
+
+    private boolean tousOntPasseSauf(Joueur actif) {
+<span class="nc" id="L122">        return aPasse.entrySet().stream()</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">                .filter(e -&gt; !e.getKey().equals(actif))</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">                .filter(e -&gt; !e.getKey().getAbandon())</span>
+<span class="nc" id="L125">                .allMatch(Map.Entry::getValue);</span>
+    }
+
+    /** Indique qu’un joueur passe. */
+    // @Override
+    public void marquerPasse(Joueur joueur) {
+<span class="nc" id="L131">        aPasse.put(joueur, true);</span>
+<span class="nc" id="L132">    }</span>
+
+    /** Le joueur propose une combinaison. Elle sera traitée dans la boucle. */
+    // @Override
+    public void proposerCombinaison(Joueur joueur, List&lt;Carte&gt; cartes) {
+<span class="nc" id="L137">        CombinaisonInterface combinaison = typesCombinaison.combinationFrom(cartes);</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">        if (combinaison != null) {</span>
+<span class="nc" id="L139">            CombinaisonCourante.set(combinaison);</span>
+        }
+<span class="nc" id="L141">    }</span>
+
+    /** Un joueur passe. */
+    public void joueurPasse(Joueur joueur) {
+<span class="nc" id="L145">        historique.addAction(new ActionHistorique(joueur, Action.PASSE, null));</span>
+<span class="nc" id="L146">        marquerPasse(joueur);</span>
+<span class="nc" id="L147">    }</span>
+
+    @Override
+    public boolean joueurJoueCombinaison(Joueur joueur, CombinaisonInterface combinaison) {
+<span class="nc bnc" id="L151" title="All 2 branches missed.">        if (combinaison == null) {</span>
+<span class="nc" id="L152">            marquerPasse(joueur);</span>
+<span class="nc" id="L153">            return false;</span>
+        }
+
+<span class="nc" id="L156">        CombinaisonInterface combinaisonEnCours = pli.getCombinaisonEnCours();</span>
+<span class="nc" id="L157">        Integer rank1 = combinaison.getRank();</span>
+<span class="nc bnc" id="L158" title="All 2 branches missed.">        Integer rank2 = (combinaisonEnCours != null) ? combinaisonEnCours.getRank() : null;</span>
+
+<span class="nc bnc" id="L160" title="All 2 branches missed.">        boolean estValide = (combinaisonEnCours == null)</span>
+<span class="nc bnc" id="L161" title="All 6 branches missed.">                || (typesCombinaison.estDuMemeType(combinaison, combinaisonEnCours)</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">                        &amp;&amp; rank1 != null &amp;&amp; rank2 != null &amp;&amp; rank1 &gt; rank2);</span>
+
+<span class="nc bnc" id="L164" title="All 2 branches missed.">        if (estValide) {</span>
+<span class="nc" id="L165">            pli.setCombinaisonEnCours(combinaison);</span>
+<span class="nc" id="L166">            pli.setGagnant(joueur);</span>
+<span class="nc" id="L167">            historique.addAction(new ActionHistorique(joueur, Action.JOUE, combinaison));</span>
+<span class="nc" id="L168">            dernierJoueurActif = joueur;</span>
+<span class="nc" id="L169">            aPasse.replaceAll((j, b) -&gt; false);</span>
+<span class="nc" id="L170">            cartesDuPli.addAll(combinaison.getCartes());</span>
+<span class="nc" id="L171">            joueur.retirerCartes(combinaison.getCartes());</span>
+<span class="nc" id="L172">            return true;</span>
+        } else {
+<span class="nc" id="L174">            marquerPasse(joueur);</span>
+<span class="nc" id="L175">            return false;</span>
+        }
+    }
+
+    /** Un joueur abandonne. */
+    public void joueurAbandonne(Joueur joueur) {
+<span class="nc" id="L181">        joueur.abandon();</span>
+<span class="nc" id="L182">        historique.addAction(new ActionHistorique(joueur, Action.ABANDON, null));</span>
+<span class="nc" id="L183">    }</span>
+
+    /** Dernière combinaison posée. */
+    @Override
+    public CombinaisonInterface getCombinaisonEnCours() {
+<span class="nc" id="L188">        return pli.getCombinaisonEnCours();</span>
+    }
+
+    /** Attache une interface vers typesCombinaisonZhengfen. */
+    public void attach(TypeCombinaisonZhengfenInterface typesCombinaisons) {
+<span class="nc" id="L193">        this.typesCombinaison = typesCombinaisons;</span>
+<span class="nc" id="L194">    }</span>
+
+    private boolean seulJoueurActifAvecCartesRestantes() {
+<span class="nc" id="L197">        return pli.getJoueurs().stream()</span>
+<span class="nc bnc" id="L198" title="All 6 branches missed.">            .filter(j -&gt; !j.getAbandon() &amp;&amp; !j.mainVide() &amp;&amp; !aPasse.get(j))</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">            .count() &lt;= 1;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

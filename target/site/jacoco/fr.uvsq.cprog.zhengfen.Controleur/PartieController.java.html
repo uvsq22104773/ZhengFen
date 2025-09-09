@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PartieController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">zhengfen</a> &gt; <a href="index.source.html" class="el_package">fr.uvsq.cprog.zhengfen.Controleur</a> &gt; <span class="el_source">PartieController.java</span></div><h1>PartieController.java</h1><pre class="source lang-java linenums">package fr.uvsq.cprog.zhengfen.Controleur;
+
+import fr.uvsq.cprog.zhengfen.Model.*;
+import fr.uvsq.cprog.zhengfen.Model.Joueur.Joueur;
+import fr.uvsq.cprog.zhengfen.View.InputManager;
+import fr.uvsq.cprog.zhengfen.View.MenuController;
+import fr.uvsq.cprog.zhengfen.View.VuePli;
+
+import java.util.Map;
+
+/**
+ * Contrôleur principal de la partie.
+ * - Gère la boucle de manches
+ * - Met à jour les scores
+ * - Affiche le gagnant
+ */
+public class PartieController {
+    private final Partie partie;
+<span class="nc" id="L19">    private TypeCombinaisonZhengfenInterface typesCombinaisons = null;</span>
+<span class="nc" id="L20">    private Historique historique = Historique.getInstance();</span>
+
+    /**
+     * Initialise le contrôleur avec une instance de Partie.
+     */
+<span class="nc" id="L25">    public PartieController(Partie partie) {</span>
+<span class="nc" id="L26">        this.partie = partie;</span>
+
+<span class="nc" id="L28">    }</span>
+
+    /**
+     * Lance la partie complète.
+     * Joue des manches jusqu'à atteindre un vainqueur.
+     */
+    public void lancer() {
+<span class="nc" id="L35">        historique.addAction(new ActionHistorique(null, Action.COMMENCEPARTIE, null));</span>
+        //VuePartie.afficherDebut();
+
+<span class="nc bnc" id="L38" title="All 2 branches missed.">        while (!partie.partieTerminee()) {</span>
+            //historique.addAction(new ActionHistorique(null, Action.COMMENCEMANCHE, null));
+            //System.out.println(&quot;➡️ Manche &quot; + numeroManche);
+
+            // Lancer une nouvelle manche
+<span class="nc" id="L43">            MancheController mancheCtrl = new MancheController(partie.getJoueurs());</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">            if (typesCombinaisons != null) {</span>
+<span class="nc" id="L45">                mancheCtrl.attach(typesCombinaisons);</span>
+            }
+<span class="nc" id="L47">            mancheCtrl.jouer();</span>
+
+            // Récupérer les scores temporaires
+<span class="nc" id="L50">            Map&lt;Joueur, Integer&gt; scoresManche = mancheCtrl.getScores();</span>
+
+            // Mettre à jour les scores globaux
+<span class="nc bnc" id="L53" title="All 2 branches missed.">            for (Map.Entry&lt;Joueur, Integer&gt; entry : scoresManche.entrySet()) {</span>
+<span class="nc" id="L54">                partie.ajouterPoints(entry.getKey(), entry.getValue());</span>
+<span class="nc" id="L55">            }</span>
+<span class="nc" id="L56">        }</span>
+
+        //VuePartie.afficherFin(partie.getGagnant(), partie.getScores());
+<span class="nc" id="L59">        historique.addAction(new ActionHistorique(partie.getGagnant(), Action.GAGNE, null));</span>
+<span class="nc" id="L60">        historique.addAction(new ActionHistorique(null, Action.FINPARTIE, null));</span>
+<span class="nc" id="L61">        VuePli.afficherFin();</span>
+<span class="nc" id="L62">        InputManager.getInstance().lireLigne();</span>
+<span class="nc" id="L63">        new MenuController().run();</span>
+<span class="nc" id="L64">    }</span>
+
+    /** Attache une interface pour manipuler les combinaisons. */
+    public void attach(TypeCombinaisonZhengfenInterface typesCombinaisons) {
+<span class="nc" id="L68">        this.typesCombinaisons = typesCombinaisons;</span>
+<span class="nc" id="L69">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

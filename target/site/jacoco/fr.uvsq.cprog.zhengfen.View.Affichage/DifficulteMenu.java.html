@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DifficulteMenu.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">zhengfen</a> &gt; <a href="index.source.html" class="el_package">fr.uvsq.cprog.zhengfen.View.Affichage</a> &gt; <span class="el_source">DifficulteMenu.java</span></div><h1>DifficulteMenu.java</h1><pre class="source lang-java linenums">package fr.uvsq.cprog.zhengfen.View.Affichage;
+
+import fr.uvsq.cprog.zhengfen.Model.OptionManager;
+import fr.uvsq.cprog.zhengfen.View.InputManager;
+import java.util.HashMap;
+
+public class DifficulteMenu implements Menu {
+    private final OptionManager optionManager;
+    private final InputManager inputManager;
+
+<span class="nc" id="L11">    private final String GRAS = &quot;\u001B[1m&quot;;</span>
+<span class="nc" id="L12">    private final String RESET = &quot;\u001B[0m&quot;;</span>
+
+<span class="nc" id="L14">    public DifficulteMenu(OptionManager optionManager) {</span>
+<span class="nc" id="L15">        this.inputManager = InputManager.getInstance();</span>
+<span class="nc" id="L16">        this.optionManager = optionManager;</span>
+<span class="nc" id="L17">    }</span>
+
+    @Override
+    public MenuType display() {
+<span class="nc" id="L21">        System.out.println(String.format(&quot;%s=== NIVEAU DE DIFFICULTÉ DES IAs ===%s\n&quot;, GRAS, RESET));</span>
+<span class="nc" id="L22">        HashMap&lt;String, Integer&gt; difficulte = optionManager.getDifficulte();</span>
+<span class="nc bnc" id="L23" title="All 2 branches missed.">        for (int i = 1; i &lt;= optionManager.getNombreIa(); i++) {</span>
+<span class="nc" id="L24">            System.out.println(String.format(&quot;  %s%d. %-5s%s : %s&quot;, GRAS, i, &quot;IA&quot; + i, RESET,</span>
+<span class="nc bnc" id="L25" title="All 2 branches missed.">                    optionManager.getDifficulte(i) == 1 ? &quot; Normale&quot; : &quot; Expert&quot;));</span>
+        }
+<span class="nc" id="L27">        System.out.println(String.format(&quot;  %s%d. Mettre toutes les IAs en normale%s&quot;, GRAS, difficulte.size() + 1, RESET));</span>
+<span class="nc" id="L28">        System.out.println(String.format(&quot;  %s%d. Mettre toutes les IAs en expert%s&quot;, GRAS, difficulte.size() + 2, RESET));</span>
+<span class="nc" id="L29">        System.out.println(String.format(&quot;\n  %s%d. Retour au menu des options%s&quot;, GRAS, difficulte.size() + 3, RESET));</span>
+
+<span class="nc" id="L31">        System.out.print(String.format(&quot;\n%sChoisissez une difficulté à modifier :%s &quot;, GRAS, RESET));</span>
+<span class="nc" id="L32">        int entree = InputManager.getInstance().lireEntier();</span>
+<span class="nc bnc" id="L33" title="All 4 branches missed.">        while (entree &lt; 1 || entree &gt; difficulte.size() + 3) {</span>
+<span class="nc" id="L34">            System.out.print(String.format(&quot;Choix invalide (nombre entre 1 et %s). Veuillez réessayer : &quot;, difficulte.size() + 1));</span>
+<span class="nc" id="L35">            entree = inputManager.lireEntier();</span>
+        }
+<span class="nc bnc" id="L37" title="All 2 branches missed.">        if (entree == difficulte.size() + 1) {</span>
+<span class="nc" id="L38">            optionManager.setAllDifficultes(1);</span>
+<span class="nc" id="L39">            return MenuType.DIFFICULTE;</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">        } else if (entree == difficulte.size() + 2) {</span>
+<span class="nc" id="L41">            optionManager.setAllDifficultes(2);</span>
+<span class="nc" id="L42">            return MenuType.DIFFICULTE;</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        } else if (entree == difficulte.size() + 3) {</span>
+<span class="nc" id="L44">            return MenuType.OPTIONS;</span>
+        } else {
+<span class="nc bnc" id="L46" title="All 2 branches missed.">            if (difficulte.get(&quot;IA&quot; + entree) == 1) {</span>
+<span class="nc" id="L47">                optionManager.setDifficulte(entree, 2);</span>
+            } else {
+<span class="nc" id="L49">                optionManager.setDifficulte(entree, 1);</span>
+            }
+<span class="nc" id="L51">            return MenuType.DIFFICULTE;</span>
+        }
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
